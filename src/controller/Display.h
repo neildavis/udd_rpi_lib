@@ -75,8 +75,8 @@ namespace udd {
         void openDisplay(DisplayConfiguration configuratrion);
 
         
-        virtual void clearScreen(const Color &color);
-        virtual void clearWindow(const Color &color, Point p1, Point p2, Rotation rotation);
+        virtual void clearScreen(Color color);
+        virtual void clearWindow(Color color, Point p1, Point p2, Rotation rotation);
         
         virtual void showImage(const Image& image);
         virtual void showImage(const Image& image, Rotation rotation);
@@ -87,7 +87,7 @@ namespace udd {
             exit(0);
         }
 
-        virtual _word color2word(ColorType* xp);
+        virtual _word color2word(Color xp);
         virtual void reset();
 
 

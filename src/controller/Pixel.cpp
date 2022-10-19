@@ -1,16 +1,13 @@
 #include "Pixel.h"
 
-Pixel::Pixel() {
-    this->color = BLACK;
-    this->point = Point(0,0);
-}
+using namespace udd;
 
-Pixel::Pixel(int x, int y, Color color) {
-    this->color = color;
-    this->point = Point(x,y);
-}
+Pixel::Pixel() 
+    : color(BLACK)
+    , point(Point()) {
+} 
 
-Pixel::Pixel(int x, int y, ColorType color) {
-    this->color = color;
-    this->point = Point(x,y);
+Pixel::Pixel(int x, int y, Color color)
+    : color(color)
+    , point(Point(x,y)) {
 }

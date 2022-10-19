@@ -24,9 +24,9 @@ namespace udd {
         printf("gpioPin:           %d\n", config.gpioPin);
 
 
-        BLUE.print();
+        ColorPrint(BLUE);
 
-        printf("blue=%d %d %d\n",  BLUE.color.blue, BLUE.color.red, BLUE.color.green);
+        printf("blue=%d %d %d\n", ColorRed(BLUE), ColorGreen(BLUE), ColorBlue(BLUE));
 
     }
 
@@ -87,15 +87,10 @@ namespace udd {
 
                 int xp=x - config.xOffset;
                 int yp=y - config.yOffset;
-                ColorType* color = image.getPixel(xp, yp, rotation);
+                Color color = image.getPixel(xp, yp, rotation);
                     
-
-                if (color == NULL) {
-                    neopixel_setPixel(pos,0);
-                } else {
-                    int clr=(color->green<<16)+(color->red<<8)+(color->blue);
-                    neopixel_setPixel(pos,clr);
-                }
+                int clr=(ColorGreen(color)<<16)+(ColorRed(color)<<8)+ColorBlue(color);
+                neopixel_setPixel(pos,clr);
                 ++pos;
             }
         }

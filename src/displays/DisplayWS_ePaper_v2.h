@@ -16,7 +16,7 @@ namespace udd {
         void initPartial();
         void reset() override;
         void readBusy() override;
-        void clearScreen(const Color &color) override;
+        void clearScreen(Color color) override;
         void showImage(const Image& image) override;
         void showImage(const Image& image, Rotation rotation) override;
         void showImage(const Image& image, Point p1, Point p2, Rotation rotation) override;

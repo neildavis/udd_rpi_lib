@@ -167,18 +167,14 @@ namespace udd {
 
     }
 
-    _word DisplayST7735R::color2word(ColorType* xp) {
-        double bluePct = xp->blue / 255.0;
-        double greenPct = xp->green / 255.0;
-        double redPct = xp->red / 255.0;
+    _word DisplayST7735R::color2word(Color xp) {
 
-        int red = redPct * 0x1f;
-        int green = greenPct * 0x3f;
-        int blue = bluePct * 0x1f;
+        int red = ColorRed(xp) >> 3;
+        int green = ColorGreen(xp) >> 2;
+        int blue = ColorBlue(xp) >> 3;
 
         _word buf = ((0x1f & (~blue)) << 11) | ((0x3f & (~green)) << 5) | ((0x1f & (~red)));
 
-        return (buf >> 8) | buf << 8;
-        //return buf;
+        return (buf >> 8) | buf << 8;   // swap endianness
     }
 }

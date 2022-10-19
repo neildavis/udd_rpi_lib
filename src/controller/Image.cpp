@@ -64,7 +64,7 @@ Image& Image::operator=(Image &&img) {
     return *this;
 }
 
-Image::Image(int width, int height, const Color &backgroundColor)
+Image::Image(int width, int height, Color backgroundColor)
     : width(width)
     , height(height)
     , backgroundColor(backgroundColor) {
@@ -77,7 +77,7 @@ void Image::init() {
     uint32_t imageSize = width * height;
     canvas = NULL;
     if (imageSize > 0) {
-        canvas = new ColorType[imageSize];
+        canvas = new Color[imageSize];
     }
 }
 
@@ -86,7 +86,7 @@ void Image::copy(const Image &img) {
     height = img.height;
     backgroundColor = img.backgroundColor;
     init();
-    memcpy(canvas, img.canvas, width * height * sizeof(ColorType));
+    memcpy(canvas, img.canvas, width * height * sizeof(Color));
 }
 
 // D'tor
@@ -102,15 +102,9 @@ int udd::Image::getHeight() const {
     return height;
 }
 
-void Image::clear(const Color &backgroundColor) {
-    for (int x = 0; x < width; ++x) {
-        for (int y = 0; y < height; ++y) {
-            ColorType* xp = getPixelColor(x, y);
-            xp->red = backgroundColor.color.red;
-            xp->green = backgroundColor.color.green;
-            xp->blue = backgroundColor.color.blue;
-            xp->opacity = backgroundColor.color.opacity;
-        }
+void Image::clear(Color backgroundColor) {
+    for (int i = 0; i < width * height; i++) {
+        canvas[i] = backgroundColor;
     }
 }
 
@@ -121,66 +115,40 @@ void Image::close() {
     }
 }
 
-void Image::drawPixel(int x, int y, const Color &color) {
-    drawPixel(x, y, color.color);
-}
-
-void Image::drawPixel(int x, int y, const ColorType &color) {
-    if (x < 0) return;
-    if (y < 0) return;
-    if (x >= width) return;
-    if (y >= height) return;
-
-    ColorType* xp = getPixelColor(x, y);
-
-    xp->red = color.red;
-    xp->green = color.green;
-    xp->blue = color.blue;
-    xp->opacity = color.opacity;
+inline void Image::drawPixel(int x, int y, Color color) {
+    if (x >= 0 && y >= 0 && x < width && y < height) {
+        canvas[y * width + x] = color;
+    }
 }
 
 void Image::printPixel(int x, int y) {
-    ColorType* xp = getPixelColor(x, y);
-
-    if (xp == NULL) {
-        printf("pixel(%d, %d)=undefined\n", x, y);
-    }else {
-        printf("pixel(%d, %d)='#%02x%02x%02x  displayWord=%04x\n", x, y, 
-            xp->red, xp->green, xp->blue, color2word(xp));
-    }
+    Color xp = getPixel(x, y);
+    printf("pixel(%d, %d)='#%02x%02x%02x\n", x, y, 
+        ColorRed(xp), ColorGreen(xp), ColorBlue(xp));
 }
 
-ColorType* Image::getPixelColor(int x, int y) const {
+inline Color Image::getPixel(int x, int y) const {
 
     if (x<0 || x >= width || y<0 || y>=height) {
-        return NULL;
+        return backgroundColor;
     }
-
-    long offset = (y * width) + x;
-
-    return &canvas[offset];
+    return canvas[(y * width) + x];
 }
 
-
-ColorType* Image::getPixel(int x, int y, Rotation rotation) const {
+Color Image::getPixel(int x, int y, Rotation rotation) const {
     switch (rotation) {
-    case DEGREE_0:    return getPixelColor(x,           y); 
-    case DEGREE_90:   return getPixelColor(y,           height-x-1);
-    case DEGREE_180:  return getPixelColor(width-x-1,   height-y-1);
-    case DEGREE_270:  return getPixelColor(width-y-1,   x);
-
     default:
-        fprintf(stderr, "not implemented yet, rotation degree=%d", rotation);
-        return getPixelColor(x, y);
+       fprintf(stderr, "not implemented yet, rotation degree=%d", rotation);
+       // fallthrough
+    case DEGREE_0:    return getPixel(x,           y); 
+    case DEGREE_90:   return getPixel(y,           height-x-1);
+    case DEGREE_180:  return getPixel(width-x-1,   height-y-1);
+    case DEGREE_270:  return getPixel(width-y-1,   x);
     }
 }
 
 
-_word Image::color2word(ColorType* xp) {
-    return ((0x1f & (xp->blue)) << 11) | ((0x3f & (xp->red)) << 5) | ((0x1f & (xp->green)));
-}
-
-void Image::drawPoint(int x, int y, const Color &color, int width) {
+void Image::drawPoint(int x, int y, Color color, int width) {
 
     switch (width) {
     case 0:
@@ -210,7 +178,7 @@ void Image::drawPoint(int x, int y, const Color &color, int width) {
 }
 
 
-void Image::drawLine(int x1, int y1, int x2, int y2, const Color &color, LineStyle style, int width) {
+void Image::drawLine(int x1, int y1, int x2, int y2, Color color, LineStyle style, int width) {
     float x, y, dx, dy;
     int i, longestLeg, rx, ry;
 
@@ -250,7 +218,7 @@ void Image::drawLine(int x1, int y1, int x2, int y2, const Color &color, LineSty
 
 
 void Image::drawText(int Xstart, int Ystart, const char* pString,
-    sFONT* Font, const Color &background, const Color &foreground) {
+    sFONT* Font, Color background, Color foreground) {
 
 
     int Xpoint = Xstart;
@@ -280,7 +248,7 @@ void Image::drawText(int Xstart, int Ystart, const char* pString,
 }
 
 void Image::drawChar(int Xpoint, int Ypoint, const char Acsii_Char,
-    sFONT* Font, const Color &background, const Color &foreground) {
+    sFONT* Font, Color background, Color foreground) {
     int Page, Column;
 
 
@@ -409,7 +377,7 @@ void Image::loadBMP(FILE *fp, int Xstart, int Ystart) {
             unsigned char green  = rowData[imageOffset++];
             unsigned char red    = rowData[imageOffset++];
 
-            Color color = Color(red, green, blue);
+            Color color = ColorRGB(red, green, blue);
             
             drawPixel(Xstart + x, Ystart + y, color);
         }
@@ -422,7 +390,7 @@ void Image::loadBMP(FILE *fp, int Xstart, int Ystart) {
 }
 
 
-void Image::drawRectangle(int x1, int y1, int x2, int y2, const Color &color, 
+void Image::drawRectangle(int x1, int y1, int x2, int y2, Color color, 
         FillPattern pattern, LineStyle lineStyle, int width) {
     
     switch (pattern) {
@@ -458,7 +426,7 @@ void Image::arcPoint(int x, int y, int radius, double degree, int* xPoint, int* 
     *yPoint = iy;
 }
 
-void Image::drawCircle(int x, int y, int radius, const Color &color, FillPattern pattern, LineStyle lineStyle, int width) {
+void Image::drawCircle(int x, int y, int radius, Color color, FillPattern pattern, LineStyle lineStyle, int width) {
 
     double xPoint, yPoint;
 
@@ -490,7 +458,7 @@ void Image::drawCircle(int x, int y, int radius, const Color &color, FillPattern
     }
 }
 
-void Image::drawLineArc(int x, int y, int length, float degree, const Color &color, LineStyle style, int width) {
+void Image::drawLineArc(int x, int y, int length, float degree, Color color, LineStyle style, int width) {
 
     double xPoint, yPoint;
 
@@ -500,7 +468,7 @@ void Image::drawLineArc(int x, int y, int length, float degree, const Color &col
     drawLine(x, y, x + round(xPoint), y + round(yPoint), color, style, width);
 }
 
-void Image::drawPieSlice(int x, int y, int radius, float degree1, float degree2, const Color &color, LineStyle style, int width) {
+void Image::drawPieSlice(int x, int y, int radius, float degree1, float degree2, Color color, LineStyle style, int width) {
 
     double xPoint, yPoint;
 
@@ -560,10 +528,10 @@ void Image::scaleBilinear(const Image &src, Image &dst) {
             int gxi1 = min(gxi+1,  src.width - 1);
             int gyi1 = min(gyi+1,  src.height - 1);
             uint32_t result=0;
-            uint32_t c00 = getRGB24(src.getPixelColor(gxi, gyi));
-            uint32_t c10 = getRGB24(src.getPixelColor(gxi1, gyi));
-            uint32_t c01 = getRGB24(src.getPixelColor(gxi, gyi1));
-            uint32_t c11 = getRGB24(src.getPixelColor(gxi1, gyi1));
+            uint32_t c00 = src.getPixel(gxi, gyi);
+            uint32_t c10 = src.getPixel(gxi1, gyi);
+            uint32_t c01 = src.getPixel(gxi, gyi1);
+            uint32_t c11 = src.getPixel(gxi1, gyi1);
             for(uint8_t i = 0; i < 3; i++){
                 result |= (uint8_t)blerp(getByte(c00, i), getByte(c10, i), getByte(c01, i), getByte(c11, i), gx - gxi, gy -gyi) << (8*i);
             }
@@ -638,7 +606,6 @@ Image Image::simpleRotate(udd::Rotation rotation) {
     int newCentreX = newWidth / 2;
     int newCentreY = newHeight / 2;
 
-    ColorType *destPixel = NULL;
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
             // map coords w.r.t centre
@@ -655,10 +622,7 @@ Image Image::simpleRotate(udd::Rotation rotation) {
             // Convert back from centre to new img origin coords
             newX = max(0, min(newCentreX + newX, newWidth - 1));
             newY = max(0, min(newHeight - (newCentreY + newY), newHeight - 1));
-            destPixel = newImage.getPixelColor(newX, newY);
-            if (destPixel) {
-                memcpy(destPixel, getPixelColor(x, y), sizeof(ColorType));
-            }
+            newImage.canvas[newY * newWidth + newX] = getPixel(x, y);
         }
     }
     return newImage;
@@ -698,12 +662,8 @@ Image Image::threeShearRotate(float angleRads) {
             newX = max(0, min(newCentreX + newX, newWidth -1));
             newY = max(0, min(newHeight - (newCentreY + newY), newHeight - 1));
             // Write pixel into new image
-            ColorType *srcPixel = getPixelColor(x, y);
-            ColorType *destPixel = &img.canvas[newY * newWidth + newX];
-            if (destPixel) {
-                memcpy(destPixel, srcPixel, sizeof(ColorType));
-            }
-        }
+            img.canvas[newY * newWidth + newX] = getPixel(x, y);
+         }
     }
     return img;
 }

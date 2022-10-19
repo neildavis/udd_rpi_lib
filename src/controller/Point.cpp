@@ -1,12 +1,10 @@
 #include "Point.h"
 
-Point::Point() {
-    this->x = 0;
-    this->y = 0;
+using namespace udd;
+
+Point::Point() : x(0), y(0) {
 }
 
-Point::Point(int x, int y) {
-    this->x = x;
-    this->y = y;
+Point::Point(int x, int y) : x(x), y(y) {
 }
 

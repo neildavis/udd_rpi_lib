@@ -96,7 +96,7 @@ namespace udd {
     }
 
     
-    void DisplayWS_ePaper_v2::clearScreen(const Color &color) {
+    void DisplayWS_ePaper_v2::clearScreen(Color color) {
         screenLock.lock();
 
         openSPI();
@@ -107,13 +107,13 @@ namespace udd {
         int _color=-1;
         int width = (config.width % 8 == 0) ? (config.width / 8) : (config.width / 8 + 1);
 
-        if (color.equals(WHITE)) {
+        if (WHITE == color) {
              _color = 0;
              strcpy(colorName, "white");
-         } else if (color.equals(BLACK)) {
+         } else if (BLACK == color) {
              _color = 1;
              strcpy(colorName, "black");
-        } else if (color.equals(RED)) {
+        } else if (RED == color) {
             _color = 2;
             strcpy(colorName, "red");
         } else {
@@ -195,20 +195,18 @@ namespace udd {
             int  bits = 0;
             _byte out = 0;
             for (int x = 0; x < width; ++x) {
-                ColorType* ct = image.getPixel(x - config.xOffset, y - config.yOffset, rotation);
+                Color color = image.getPixel(x - config.xOffset, y - config.yOffset, rotation);
                 int val=1;
-                if (ct != NULL) {
-                    if (WHITE.equals(*ct)) {
-                        val=1;
-                    }
-                    else if (BLACK.equals(*ct)) {
-                        val=0;
-                    }
-                    else if (RED.equals(*ct)) {
-                        val=1;
-                    } else {
-                        fprintf(stderr, "invalid color found at (%d,%d)\n", x, y);
-                    }
+                if (WHITE == color) {
+                    val=1;
+                }
+                else if (BLACK == color) {
+                    val=0;
+                }
+                else if (RED == color) {
+                    val=1;
+                } else {
+                    fprintf(stderr, "invalid color found at (%d,%d)\n", x, y);
                 }
                 if (++bits % 8 == 0) {
                     writeData(out);
@@ -229,20 +227,18 @@ namespace udd {
             int  bits = 0;
             _byte out = 0;
             for (int x = 0; x < width; ++x) {
-                ColorType* ct = image.getPixel(x - config.xOffset, y - config.yOffset, rotation);
+                Color color = image.getPixel(x - config.xOffset, y - config.yOffset, rotation);
                 int val=1;
-                if (ct != NULL) {
-                    if (WHITE.equals(*ct)) {
-                        val=1;
-                    }
-                    else if (BLACK.equals(*ct)) {
-                        val=1;
-                    }
-                    else if (RED.equals(*ct)) {
-                        val=0;
-                    } else {
-                        fprintf(stderr, "invalid color found at (%d,%d)\n", x, y);
-                    }
+                if (WHITE == color) {
+                    val=1;
+                }
+                else if (BLACK == color) {
+                    val=1;
+                }
+                else if (RED == color) {
+                    val=0;
+                } else {
+                    fprintf(stderr, "invalid color found at (%d,%d)\n", x, y);
                 }
                 if (++bits % 8 == 0) {
                     writeData(out);

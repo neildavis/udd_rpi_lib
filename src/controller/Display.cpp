@@ -78,18 +78,15 @@ namespace udd {
         usleep(100 * 1000);
     }
 
-    _word Display::color2word(ColorType* xp) {
-        double bluePct = xp->blue / 255.0;
-        double greenPct = xp->green / 255.0;
-        double redPct = xp->red / 255.0;
+    _word Display::color2word(Color xp) {
 
-        int red = redPct * 0x1f;
-        int green = greenPct * 0x3f;
-        int blue = bluePct * 0x1f;
+        int red = ColorRed(xp) >> 3;
+        int green = ColorGreen(xp) >> 2;
+        int blue = ColorBlue(xp) >> 3;
 
-        _word buf = ((0x1f & (red)) << 11) | ((0x3f & (green)) << 5) | ((0x1f & (blue)));
+        _word buf = (red << 11) | (green << 5) | blue;
 
-        return (buf >> 8) | buf << 8;
+        return (buf >> 8) | buf << 8;   // swap endianness
     }
 
     void Display::printConfiguration() {
@@ -138,17 +135,15 @@ namespace udd {
         }
     }
 
-    void Display::clearWindow(const Color &color, Point p1, Point p2, Rotation rotation) {
+    void Display::clearWindow(Color color, Point p1, Point p2, Rotation rotation) {
         screenLock.lock();
 
         openSPI();
         resume();
 
-        ColorType ct = color.toType();
-
         _word  row[config.width + config.xOffset];
         _byte* rowPointer = (_byte*)(row);
-        _word  cx = color2word(&ct);
+        _word  cx = color2word(color);
 
         int width = p2.x - p1.x + 1;
         int height = p2.y - p1.y + 1;
@@ -168,7 +163,7 @@ namespace udd {
         screenLock.unlock();
     }
 
-    void Display::clearScreen(const Color &color) {
+    void Display::clearScreen(Color color) {
         screenLock.lock();
         openSPI();
         resume();
@@ -179,8 +174,7 @@ namespace udd {
         _word  row[width];
         _byte* rowPointer = (_byte*)(row);
 
-        ColorType ct = color.toType();
-        _word  cx = color2word(&ct);
+        _word  cx = color2word(color);
 
         for (int x = 0; x < width; x++) {
             row[x] = cx;
@@ -269,13 +263,8 @@ namespace udd {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; ++x) {
-                ColorType* ct = image.getPixel(x, y, rotation);
-
-                if (ct == NULL) {
-                    row[x] = 0;
-                } else {
-                    row[x] = color2word(ct);
-                }
+                Color color = image.getPixel(x, y, rotation);
+                row[x] = color2word(color);
             }
 
             writeData(rowPointer, (width) * 2);
