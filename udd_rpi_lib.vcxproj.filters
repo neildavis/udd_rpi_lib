@@ -17,10 +17,8 @@
     <ClCompile Include="src\controller\IdGenerator.cpp" />
     <ClCompile Include="example\demo1.cpp" />
     <ClCompile Include="example\demo2.cpp" />
-    <ClCompile Include="src\displays\DisplayWS_ePaper_v2.cpp" />
     <ClCompile Include="src\controller\Pixel.cpp" />
     <ClCompile Include="src\controller\Point.cpp" />
-    <ClCompile Include="example\wsePaperV2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\fonts\fonts.h" />
@@ -33,10 +31,8 @@
     <ClInclude Include="src\displays\DisplayST7735R.h" />
     <ClInclude Include="src\controller\IdGenerator.h" />
     <ClInclude Include="src\bmp\GUI_BMPfile.h" />
-    <ClInclude Include="src\displays\DisplayWS_ePaper_v2.h" />
     <ClInclude Include="src\controller\Pixel.h" />
     <ClInclude Include="src\controller\Point.h" />
-    <ClInclude Include="src\displays\DisplayWS_ePaper_v2_LUT.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\fonts\Release_Notes.html" />

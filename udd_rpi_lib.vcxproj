@@ -67,7 +67,6 @@
   <ItemGroup>
     <ClCompile Include="example\demo1.cpp" />
     <ClCompile Include="example\demo2.cpp" />
-    <ClCompile Include="example\wsePaperV2.cpp" />
     <ClCompile Include="src\controller\IdGenerator.cpp" />
     <ClCompile Include="src\controller\Pixel.cpp" />
     <ClCompile Include="src\controller\Point.cpp" />
@@ -75,7 +74,6 @@
     <ClCompile Include="src\displays\DisplayST7789.cpp" />
     <ClCompile Include="src\controller\Metadata.cpp" />
     <ClCompile Include="src\controller\Color.cpp" />
-    <ClCompile Include="src\displays\DisplayWS_ePaper_v2.cpp" />
     <ClCompile Include="src\fonts\font12.c" />
     <ClCompile Include="src\fonts\font12CN.c" />
     <ClCompile Include="src\fonts\font16.c" />
@@ -95,8 +93,6 @@
     <ClInclude Include="src\bmp\GUI_BMPfile.h" />
     <ClInclude Include="src\controller\Metadata.h" />
     <ClInclude Include="src\controller\Color.h" />
-    <ClInclude Include="src\displays\DisplayWS_ePaper_v2.h" />
-    <ClInclude Include="src\displays\DisplayWS_ePaper_v2_LUT.h" />
     <ClInclude Include="src\fonts\fonts.h" />
     <ClInclude Include="src\controller\Image.h" />
     <ClInclude Include="src\controller\Display.h" />
