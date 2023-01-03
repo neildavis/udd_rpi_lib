@@ -17,9 +17,6 @@
     <ClCompile Include="src\controller\IdGenerator.cpp" />
     <ClCompile Include="example\demo1.cpp" />
     <ClCompile Include="example\demo2.cpp" />
-    <ClCompile Include="example\neopixel.cpp" />
-    <ClCompile Include="example\neopixel2.cpp" />
-    <ClCompile Include="src\displays\DisplayNeoPixel.cpp" />
     <ClCompile Include="src\displays\DisplayWS_ePaper_v2.cpp" />
     <ClCompile Include="src\controller\Pixel.cpp" />
     <ClCompile Include="src\controller\Point.cpp" />
@@ -36,7 +33,6 @@
     <ClInclude Include="src\displays\DisplayST7735R.h" />
     <ClInclude Include="src\controller\IdGenerator.h" />
     <ClInclude Include="src\bmp\GUI_BMPfile.h" />
-    <ClInclude Include="src\displays\DisplayNeoPixel.h" />
     <ClInclude Include="src\displays\DisplayWS_ePaper_v2.h" />
     <ClInclude Include="src\controller\Pixel.h" />
     <ClInclude Include="src\controller\Point.h" />

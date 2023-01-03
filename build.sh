@@ -41,8 +41,8 @@ C="gcc"
 CC="g++"
 CFLAGS="-c -O2 -std=c11 -Wall"
 CCFLAGS="-c -O2 -std=gnu++11 -Wall -Dversion=$VERSION"
-LDFLAGS="-pthread -lwiringPi -lNeoPixelRPi -lm -Wl,--no-undefined -Wl,-z,now"
-EXELIBS="-lwiringPi -lNeoPixelRPi -lpthread -lwiringPiADS1115rpi"
+LDFLAGS="-pthread -lwiringPi -lm -Wl,--no-undefined -Wl,-z,now"
+EXELIBS="-lwiringPi -lpthread"
 
 INCLUDES=`find $SRC -type d | awk '{printf("-I%s ",$0);}'`
 
@@ -134,7 +134,7 @@ executable() {
   [ "$INSTALL" != 1 ] && install
 
   echo linking demos
-  STATIC=${DESTDIR}${PREFIX}/lib/lib$LIBNAME.a
+#  STATIC=${DESTDIR}${PREFIX}/lib/lib$LIBNAME.a
   DYNAMIC=`echo lib$LIBNAME | sed 's/^lib//'`
 
   LAST=$(ls -1tr "$OBJECT" "$SOURCE" "$HEADER" 2>/dev/null | tail -1)
@@ -149,13 +149,6 @@ executable() {
     done
   fi
 
-#  for EXE in neopixel
-#  do
-#    LAST=$(ls -1tr "example/$EXE.cpp" "$BIN/$EXE" 2>/dev/null | tail -1)
-#    if [ $LAST != "$BIN/$EXE" ];then
-#      userEcho $CC -lwiringPi -lNeoPixelRPi -l$LIBNAME -lpthread  example/$EXE.cpp -o $BIN/$EXE
-#    fi
-#  done
 }
 
 #:###################:#
