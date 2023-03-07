@@ -55,6 +55,7 @@ namespace udd {
 
         void drawCircle(int x, int y, int radius, const Color &Color, FillPattern pattern, LineStyle lineStyle, int width);
         void drawPieSlice(int x, int y, int radius, float degree1, float degree2, const Color &color, LineStyle style, int width);
+        void drawArc(int x, int y, int radiusOuter, int radiusInner, float degree1, float degree2, const Color &color, int lineWidth=1);
         void printPixel(int x, int y);
 
         ColorType* getPixel(int x, int y, udd::Rotation rotation) const;

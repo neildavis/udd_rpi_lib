@@ -451,11 +451,8 @@ void Image::arcPoint(int x, int y, int radius, double degree, int* xPoint, int* 
     double px = radius * cos(degree * PI / 180.0);
     double py = radius * sin(degree * PI / 180.0);
 
-    int ix = x + round(px);
-    int iy = y + round(py);
-
-    *xPoint = ix;
-    *yPoint = iy;
+    *xPoint = x + round(px);
+    *yPoint = y + round(py);
 }
 
 void Image::drawCircle(int x, int y, int radius, const Color &color, FillPattern pattern, LineStyle lineStyle, int width) {
@@ -502,18 +499,22 @@ void Image::drawLineArc(int x, int y, int length, float degree, const Color &col
 
 void Image::drawPieSlice(int x, int y, int radius, float degree1, float degree2, const Color &color, LineStyle style, int width) {
 
-    double xPoint, yPoint;
-
-
     int lx=-1, ly=-1;
     int ct = 0;
 
     for (int degree = degree1; degree <= degree2; degree += 1) {
         
-        xPoint = radius * cos(degree * PI / 180.0);
-        yPoint = radius * sin(degree * PI / 180.0);
+        double xPoint = radius * cos(degree * PI / 180.0);
+        double yPoint = radius * sin(degree * PI / 180.0);
 
         switch (style) {
+        case DOTTED:
+            if (lx != xPoint || ly != yPoint) {
+                if (++ct % 2 == 0) {
+                    continue;
+                }
+            }
+            // fallthrough
         case SOLID:
             if (lx != xPoint || ly != yPoint) {
                 drawLine(x, y, x + round(xPoint), y + round(yPoint), color, style, width);
@@ -521,16 +522,18 @@ void Image::drawPieSlice(int x, int y, int radius, float degree1, float degree2,
                 ly = yPoint;
             }
             break;
-        case DOTTED:
-            if (lx != xPoint || ly != yPoint) {
-                if (++ct % 2 == 1) {
-                    drawLine(x, y, x + round(xPoint), y + round(yPoint), color, style, width);
-                }
-                lx = xPoint;
-                ly = yPoint;
-            }
         }
     }
+}
+
+void Image::drawArc(int x, int y, int radiusOuter, int radiusInner, float degree1, float degree2, const Color &color, int lineWidth) {
+    for (float degree = degree1; degree <= degree2; degree += 1.0) {
+        double xPoint1 = radiusInner * cos(degree * PI / 180.0);
+        double yPoint1 = radiusInner * sin(degree * PI / 180.0);
+        double xPoint2 = radiusOuter * cos(degree * PI / 180.0);
+        double yPoint2 = radiusOuter * sin(degree * PI / 180.0);
+        drawLine(x + round(xPoint1), y + round(yPoint1), x + round(xPoint2), y + round(yPoint2), color, SOLID, lineWidth);
+   }
 }
 
 Image Image::scale(float scaleX, float scaleY, ScaleMode mode) {
