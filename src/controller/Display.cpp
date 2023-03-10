@@ -36,6 +36,10 @@ namespace udd {
         displayId = IdGenerator::next(); 
     }
 
+    Display::~Display() {
+        closeSPI();
+    }
+
     void Display::init() {
         fprintf(stderr, "init failed, base method called instead of child\n");
         exit(0);

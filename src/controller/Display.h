@@ -53,7 +53,6 @@ namespace udd {
         int handle = -1;
 
         Display();
-        virtual ~Display() {}
 
         void adjustPoint(int& x, int& y, Rotation rotation);
 
@@ -63,6 +62,7 @@ namespace udd {
         DisplayConfiguration config;
         
         virtual void init();
+        virtual ~Display();
 
 
         void openDisplay(DisplayConfiguration configuratrion);
