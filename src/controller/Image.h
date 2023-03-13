@@ -58,6 +58,8 @@ namespace udd {
         void drawArc(int x, int y, int radiusOuter, int radiusInner, float degree1, float degree2, const Color &color, int lineWidth=1);
         void printPixel(int x, int y);
 
+        void drawImage(int x, int y, const Image &image, bool backgroundTransparent = false);
+
         ColorType* getPixel(int x, int y, udd::Rotation rotation) const;
 
         ColorType* getPixelColor(int x, int y) const;

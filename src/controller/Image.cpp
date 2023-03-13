@@ -150,6 +150,19 @@ void Image::printPixel(int x, int y) {
     }
 }
 
+void Image::drawImage(int x, int y, const Image &image, bool backgroundTransparent) {
+    for (int srcX = 0, dstX = x; srcX < image.getWidth() && dstX < getWidth(); srcX++, dstX++) {
+        for (int srcY = 0, dstY = y; srcY < image.getHeight() && dstY < getHeight(); srcY++, dstY++) {
+            ColorType *srcColor = image.getPixelColor(srcX, srcY);
+            if (NULL != srcColor &&
+                (!backgroundTransparent ||
+                !image.backgroundColor.equals(*srcColor))) {
+                    drawPixel(dstX, dstY, *srcColor);
+            }
+        }
+    }
+}
+
 ColorType* Image::getPixelColor(int x, int y) const {
 
     if (x<0 || x >= width || y<0 || y>=height) {
@@ -501,7 +514,11 @@ void Image::drawPieSlice(int x, int y, int radius, float degree1, float degree2,
 
     int lx=-1, ly=-1;
     int ct = 0;
-
+    if (degree2 < degree1) {
+        float tmp = degree1;
+        degree1 = degree2;
+        degree2 = tmp;
+    }
     for (int degree = degree1; degree <= degree2; degree += 1) {
         
         double xPoint = radius * cos(degree * PI / 180.0);
