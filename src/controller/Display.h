@@ -41,7 +41,9 @@ namespace udd {
         int spiSpeed = 10000000;
         int spiMode = 0; // SPI mode 0,1,2,3
 
-        bool invertColors = false;
+        // Vairations
+        bool invertColors = false;  // RGB values are logical NOT
+        bool BGR = false;  // If BGR, blue values are MSB and red valuyes LSB. RGB vice versa
     };
 
     typedef DisplayConfigurationStruct      DisplayConfiguration;

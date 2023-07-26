@@ -166,27 +166,4 @@ namespace udd {
 
 
     }
-
-    _word DisplayST7735R::color2word(ColorType* xp) {
-        double bluePct = xp->blue / 255.0;
-        double greenPct = xp->green / 255.0;
-        double redPct = xp->red / 255.0;
-
-        int red = ~(int)(redPct * 0x1f);
-        int green = ~(int)(greenPct * 0x3f);
-        int blue = ~(int)(bluePct * 0x1f);
-
-        // By default, blue occupies msb, and red occupies lsb 
-        int *ch = &blue, *cl = &red;
-        if (config.invertColors) {
-            // Inverted, blue occupies lsb, and red occupies msb 
-            ch = &red;
-            cl = &blue;
-        }
-
-        _word buf = ((0x1f & (*ch)) << 11) | ((0x3f & (green)) << 5) | ((0x1f & (*cl)));
-
-        return (buf >> 8) | buf << 8;
-        //return buf;
-    }
 }

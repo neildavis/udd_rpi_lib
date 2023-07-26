@@ -52,9 +52,6 @@ namespace udd {
 
         void init() override;
         void initScanDir(LCD_SCAN_DIR direction);
-
-        _word color2word(ColorType* xp);
-
     };
 
 

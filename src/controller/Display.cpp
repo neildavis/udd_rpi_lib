@@ -91,9 +91,16 @@ namespace udd {
         int green = greenPct * 0x3f;
         int blue = bluePct * 0x1f;
 
+        // Some variants have colors inverted
+        if (config.invertColors) {
+            red = ~red;
+            green = ~green;
+            blue = ~blue;
+        }
+
         // By default, red occupies msb, and blue occupies msb 
         int *ch = &red, *cl = &blue;
-        if (config.invertColors) {
+        if (config.BGR) {
         // Inverted, red occupies lsb, and blue occupies msb 
             ch = &blue;
             cl = &red;
@@ -126,6 +133,7 @@ namespace udd {
         printf("spiMode:           %d\n", config.spiMode);
 
         printf("invertColors:      %d\n", config.invertColors);
+        printf("BGR:               %d\n", config.BGR);
 
         printf("handle:            %d\n", handle);
     }
