@@ -91,7 +91,16 @@ namespace udd {
         int green = greenPct * 0x3f;
         int blue = bluePct * 0x1f;
 
-        _word buf = ((0x1f & (red)) << 11) | ((0x3f & (green)) << 5) | ((0x1f & (blue)));
+        // By default, red occupies msb, and blue occupies msb 
+        int *ch = &red, *cl = &blue;
+        if (config.invertColors) {
+        // Inverted, red occupies lsb, and blue occupies msb 
+            ch = &blue;
+            cl = &red;
+        }
+
+        _word buf = ((0x1f & (*ch)) << 11) | ((0x3f & (green)) << 5) | ((0x1f & (*cl)));
+ 
 
         return (buf >> 8) | buf << 8;
     }
@@ -115,6 +124,8 @@ namespace udd {
         printf("spiChannel:        %d\n", config.spiChannel);
         printf("spiSpeed:          %d\n", config.spiSpeed);
         printf("spiMode:           %d\n", config.spiMode);
+
+        printf("invertColors:      %d\n", config.invertColors);
 
         printf("handle:            %d\n", handle);
     }

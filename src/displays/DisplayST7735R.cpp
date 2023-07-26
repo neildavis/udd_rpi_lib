@@ -172,11 +172,19 @@ namespace udd {
         double greenPct = xp->green / 255.0;
         double redPct = xp->red / 255.0;
 
-        int red = redPct * 0x1f;
-        int green = greenPct * 0x3f;
-        int blue = bluePct * 0x1f;
+        int red = ~(int)(redPct * 0x1f);
+        int green = ~(int)(greenPct * 0x3f);
+        int blue = ~(int)(bluePct * 0x1f);
 
-        _word buf = ((0x1f & (~blue)) << 11) | ((0x3f & (~green)) << 5) | ((0x1f & (~red)));
+        // By default, blue occupies msb, and red occupies lsb 
+        int *ch = &blue, *cl = &red;
+        if (config.invertColors) {
+            // Inverted, blue occupies lsb, and red occupies msb 
+            ch = &red;
+            cl = &blue;
+        }
+
+        _word buf = ((0x1f & (*ch)) << 11) | ((0x3f & (green)) << 5) | ((0x1f & (*cl)));
 
         return (buf >> 8) | buf << 8;
         //return buf;
